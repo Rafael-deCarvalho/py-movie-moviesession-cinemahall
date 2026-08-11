@@ -1,5 +1,6 @@
 from django.utils import timezone
 from datetime import datetime, date
+from django.db.models import QuerySet
 from db.models import MovieSession
 
 
@@ -7,7 +8,7 @@ def create_movie_session(
     movie_show_time: datetime,
     movie_id: int,
     cinema_hall_id: int
-) -> None:
+) -> MovieSession:
     if timezone.is_aware(movie_show_time):
         movie_show_time = timezone.make_naive(movie_show_time)
 
@@ -18,7 +19,7 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: date = None) -> list[MovieSession]:
+def get_movies_sessions(session_date: date = None) -> QuerySet[MovieSession]:
     if session_date:
         return MovieSession.objects.filter(show_time__date=session_date)
     return MovieSession.objects.all()
@@ -39,6 +40,8 @@ def update_movie_session(
 
     session = MovieSession.objects.get(id=session_id)
     if show_time:
+        if timezone.is_aware(show_time):
+            show_time = timezone.make_naive(show_time)
         session.show_time = show_time
     if movie_id:
         session.movie_id = movie_id
@@ -48,4 +51,4 @@ def update_movie_session(
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
-    MovieSession.objects.filter(id=session_id).delete()
+    MovieSession.objects.get(id=session_id).delete()

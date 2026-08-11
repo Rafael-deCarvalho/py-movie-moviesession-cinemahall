@@ -3,8 +3,7 @@ from db.models import CinemaHall
 
 
 def get_cinema_halls() -> QuerySet[CinemaHall]:
-    cinema_halls = CinemaHall.objects.all()
-    return cinema_halls
+    return CinemaHall.objects.all()
 
 
 def create_cinema_hall(
