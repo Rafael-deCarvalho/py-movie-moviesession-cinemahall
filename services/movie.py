@@ -2,8 +2,8 @@ from db.models import Movie, Genre, Actor
 
 
 def get_movies(
-    genres_ids: list[id] = None,
-    actors_ids: list[id] = None
+    genres_ids: list[int] = None,
+    actors_ids: list[int] = None
 ) -> Movie:
 
     if not genres_ids and not actors_ids:
@@ -27,10 +27,10 @@ def get_movies(
 
 
 def get_movie_by_id(movie_id: int) -> Movie | str:
-    movie = Movie.objects.get(id=movie_id)
-    if movie:
-        return movie
-    return "Movie not found"
+    try:
+        return Movie.objects.get(id=movie_id)
+    except Movie.DoesNotExist:
+        return "Movie not found"
 
 
 def create_movie(
